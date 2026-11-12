@@ -146,10 +146,22 @@ extern void mirageToggleEngine(void);
                         accessibilityDescription:@"Mirage"];
     }
     if (img != nil) {
-        [img setTemplate:YES];
-        button.image = img;
+        if (tintColor != nil) {
+            NSSize sz = img.size;
+            NSImage *tinted = [NSImage imageWithSize:sz flipped:NO drawingHandler:^BOOL(NSRect dstRect) {
+                [img drawInRect:dstRect fromRect:NSZeroRect operation:NSCompositingOperationSourceOver fraction:1.0];
+                [tintColor set];
+                NSRectFillUsingOperation(dstRect, NSCompositingOperationSourceAtop);
+                return YES;
+            }];
+            [tinted setTemplate:NO];
+            button.image = tinted;
+        } else {
+            [img setTemplate:YES];
+            button.image = img;
+        }
         button.title = @"";
-        button.contentTintColor = tintColor;
+        button.contentTintColor = nil;
     } else {
         button.image = nil;
         button.title = fallbackTitle;
