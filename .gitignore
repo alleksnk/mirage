@@ -1,0 +1,25 @@
+# Built releases (publish via GitHub Releases, not git commits)
+release/
+
+# Logs & local runtime artifacts
+*.log
+*.tmp
+startup_error.log
+
+# Windows build outputs & extracted scratch
+windows/*.exe
+windows/bin/extracted/
+windows/bin/*.zip
+windows/config/settings.ini
+
+# Android Gradle & local SDK config
+android/.gradle/
+android/local.properties
+android/app/build/
+android/build/
+android/.idea/
+*.iml
+
+# macOS build intermediates
+macos/build/
+

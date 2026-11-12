@@ -1,0 +1,59 @@
+# Список доменов для избирательного обхода DPI
+# Каждый домен с новой строки (без https:// и путей)
+
+# YouTube (браузер + Android-клиент Innertube) & Google Media
+youtube.com
+googlevideo.com
+ytimg.com
+youtu.be
+ggpht.com
+youtubei.googleapis.com
+jnn-pa.googleapis.com
+youtube.googleapis.com
+youtubeembeddedplayer.googleapis.com
+www.googleapis.com
+oauth2.googleapis.com
+play.googleapis.com
+android.clients.google.com
+clientservices.googleapis.com
+firebaseremoteconfig.googleapis.com
+firebaseinstallations.googleapis.com
+s.youtube.com
+video-stats.l.google.com
+yt3.googleusercontent.com
+lh3.googleusercontent.com
+suggestqueries-clients6.google.com
+suggestqueries.google.com
+gvt1.com
+gvt2.com
+
+# Discord
+discord.com
+discordapp.com
+discord.gg
+discord-attachments-uploads-prd.storage.googleapis.com
+gateway.discord.gg
+
+# Telegram
+telegram.org
+t.me
+telesco.pe
+
+# GitHub & Dev
+githubusercontent.com
+raw.githubusercontent.com
+
+# Торренты и трекеры
+rutor.info
+rutor.is
+rutracker.org
+nnmclub.to
+
+# Соцсети и медиа
+instagram.com
+cdninstagram.com
+twitter.com
+x.com
+twimg.com
+notion.so
+medium.com

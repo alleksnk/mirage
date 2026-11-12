@@ -1,0 +1,505 @@
+<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Mirage — Свободный доступ" Height="640" Width="540"
+        WindowStartupLocation="CenterScreen"
+        Background="#0B0E14" Foreground="#F1F5F9"
+        FontFamily="Segoe UI" FontSize="13"
+        ResizeMode="CanResizeWithGrip" MinHeight="580" MinWidth="480">
+
+    <Window.Resources>
+        <!-- Minimalist TabItem Style -->
+        <Style TargetType="TabItem">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabItem">
+                        <Border Name="Border" Background="Transparent" Padding="14,10" Margin="0,0,4,0" Cursor="Hand">
+                            <ContentPresenter ContentSource="Header" TextElement.Foreground="#8B98B0" TextElement.FontWeight="SemiBold" TextElement.FontSize="12.5"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="Border" Property="BorderBrush" Value="#3B82F6"/>
+                                <Setter TargetName="Border" Property="BorderThickness" Value="0,0,0,2"/>
+                                <Setter Property="TextElement.Foreground" Value="#F1F5F9"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="TextElement.Foreground" Value="#FFFFFF"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Minimalist Tonal Button Style -->
+        <Style TargetType="Button">
+            <Setter Property="Background" Value="#1E2636"/>
+            <Setter Property="Foreground" Value="#E2E8F0"/>
+            <Setter Property="BorderBrush" Value="#2B364C"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="14,7"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Name="Border"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="8"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Border" Property="Background" Value="#273247"/>
+                                <Setter Property="Foreground" Value="#FFFFFF"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Border" Property="Background" Value="#313E57"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="Border" Property="Opacity" Value="0.55"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- ComboBoxItem Style -->
+        <Style TargetType="ComboBoxItem">
+            <Setter Property="Background" Value="#151B28"/>
+            <Setter Property="Foreground" Value="#E2E8F0"/>
+            <Setter Property="Padding" Value="10,7"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBoxItem">
+                        <Border Name="ItemBorder" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" CornerRadius="6" Margin="3,1">
+                            <ContentPresenter/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsHighlighted" Value="True">
+                                <Setter TargetName="ItemBorder" Property="Background" Value="#222C40"/>
+                                <Setter Property="Foreground" Value="#FFFFFF"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- ComboBox ToggleButton Template -->
+        <ControlTemplate x:Key="ComboBoxToggleButton" TargetType="ToggleButton">
+            <Grid>
+                <Border Name="Border" Background="#111622" BorderBrush="#263147" BorderThickness="1" CornerRadius="8"/>
+                <Path Name="Arrow" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,12,0" Fill="#8B98B0" Data="M 0 0 L 4 4 L 8 0 Z"/>
+            </Grid>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter TargetName="Border" Property="BorderBrush" Value="#3B82F6"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+
+        <!-- ComboBox Style -->
+        <Style TargetType="ComboBox">
+            <Setter Property="Foreground" Value="#F1F5F9"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Height" Value="34"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid>
+                            <ToggleButton Name="ToggleButton" Template="{StaticResource ComboBoxToggleButton}" Focusable="False"
+                                          IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                          ClickMode="Press"/>
+                            <ContentPresenter Name="ContentSite" IsHitTestVisible="False"
+                                              Content="{TemplateBinding SelectionBoxItem}"
+                                              Margin="12,2,28,2" VerticalAlignment="Center" HorizontalAlignment="Left"
+                                              TextElement.Foreground="#F1F5F9" TextElement.FontWeight="Medium"/>
+                            <Popup Name="Popup" Placement="Bottom" IsOpen="{TemplateBinding IsDropDownOpen}" AllowsTransparency="True" Focusable="False">
+                                <Grid Name="DropDown" MinWidth="{TemplateBinding ActualWidth}" MaxHeight="220">
+                                    <Border Background="#151B28" BorderBrush="#263147" BorderThickness="1" CornerRadius="8" Margin="0,4,0,0" Padding="2">
+                                        <ScrollViewer SnapsToDevicePixels="True">
+                                            <StackPanel IsItemsHost="True"/>
+                                        </ScrollViewer>
+                                    </Border>
+                                </Grid>
+                            </Popup>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- CheckBox Dark Style -->
+        <Style TargetType="CheckBox">
+            <Setter Property="Foreground" Value="#E2E8F0"/>
+            <Setter Property="FontSize" Value="12.5"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Top Header Bar -->
+        <Border Grid.Row="0" Background="#111622" BorderBrush="#1E2636" BorderThickness="0,0,0,1" Padding="18,12">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <Border Width="34" Height="34" CornerRadius="10" Background="#111A2B" BorderBrush="#263B5E" BorderThickness="1" Margin="0,0,12,0">
+                        <Canvas Width="24" Height="24" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <Path Fill="#60A5FA" Data="M11.2,3 L3.5,12 L11.2,21 L11.2,16.6 L7.4,12 L11.2,7.4 Z"/>
+                            <Path Fill="#38BDF8" Data="M12.8,3 L20.5,12 L12.8,21 L12.8,16.6 L16.6,12 L12.8,7.4 Z"/>
+                            <Path Fill="#F1F5F9" Data="M12,9.2 L14.8,12 L12,14.8 L9.2,12 Z"/>
+                        </Canvas>
+                    </Border>
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock Text="Mirage" FontSize="15" FontWeight="Bold" Foreground="#F1F5F9"/>
+                        <TextBlock Text="Свободный доступ без VPN и замедления" FontSize="11" Foreground="#8B98B0"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <!-- Status Pill -->
+                <Border Name="BadgeStatus" Grid.Column="1" CornerRadius="14" Background="#151B28" BorderBrush="#222B3D" BorderThickness="1" Padding="12,5" VerticalAlignment="Center">
+                    <StackPanel Orientation="Horizontal">
+                        <Ellipse Name="DotStatus" Width="8" Height="8" Fill="#EF4444" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                        <TextBlock Name="TxtBadgeStatus" Text="Отключено" FontWeight="SemiBold" FontSize="11.5" Foreground="#E2E8F0"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </Border>
+
+        <!-- Main Tab Control -->
+        <TabControl Name="MainTabs" Grid.Row="1" Background="Transparent" BorderThickness="0" Padding="0">
+
+            <!-- TAB 0: ОБЗОР (CLEAN SINGLE-SCREEN DASHBOARD) -->
+            <TabItem Header="Обзор">
+                <StackPanel Margin="18,16">
+
+                    <!-- Hero Control Card -->
+                    <Border Background="#151B28" CornerRadius="14" BorderBrush="#222B3D" BorderThickness="1" Padding="20,18" Margin="0,0,0,14">
+                        <StackPanel HorizontalAlignment="Center">
+                            <TextBlock Name="TxtMainStatus" Text="Обход DPI выключен" FontSize="19" FontWeight="Bold" Foreground="#F1F5F9" HorizontalAlignment="Center"/>
+                            <TextBlock Name="TxtMainSubStatus" Text="Нажмите «Включить», чтобы обойти блокировки" FontSize="12" Foreground="#8B98B0" HorizontalAlignment="Center" Margin="0,5,0,16" TextTrimming="CharacterEllipsis"/>
+
+                            <!-- Sleek Master Pill Button -->
+                            <Button Name="BtnToggle" Height="44" Width="236" HorizontalAlignment="Center" BorderThickness="0">
+                                <Button.Template>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Name="Border" Background="#3B82F6" CornerRadius="22" Padding="18,8">
+                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <TextBlock Name="BtnIcon" Text="▶" FontSize="11" Foreground="#FFFFFF" Margin="0,0,9,0" VerticalAlignment="Center"/>
+                                                <TextBlock Name="BtnLabel" Text="ВКЛЮЧИТЬ ОБХОД" FontSize="13.5" FontWeight="Bold" Foreground="#FFFFFF" VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="Border" Property="Opacity" Value="0.9"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+
+                            <!-- Mode / Preset selector -->
+                            <Grid Margin="0,16,0,0" Width="340" HorizontalAlignment="Center">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Режим:" Foreground="#8B98B0" FontSize="12" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                <ComboBox Name="CmbMainPreset" Grid.Column="1" Height="32">
+                                    <ComboBoxItem Content="YouTube + Сайты (Основной -9)" IsSelected="True"/>
+                                    <ComboBoxItem Content="YouTube + Сайты (Альтернативный -5)"/>
+                                    <ComboBoxItem Content="Максимальный обход (-e 1 -q)"/>
+                                </ComboBox>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Popular Blocked Resources Availability Grid -->
+                    <Border Background="#151B28" CornerRadius="14" BorderBrush="#222B3D" BorderThickness="1" Padding="16,14">
+                        <StackPanel>
+                            <Grid Margin="0,0,0,12">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                    <TextBlock Text="Доступность ресурсов" FontSize="13" FontWeight="SemiBold" Foreground="#F1F5F9" VerticalAlignment="Center"/>
+                                    <Border Name="BadgeResourcesCount" Background="#111622" BorderBrush="#222B3D" BorderThickness="1" CornerRadius="10" Padding="8,2" Margin="10,0,0,0" VerticalAlignment="Center">
+                                        <TextBlock Name="TxtResourcesSummary" Text="0 / 8" FontSize="11" FontWeight="SemiBold" Foreground="#8B98B0"/>
+                                    </Border>
+                                </StackPanel>
+
+                                <Button Name="BtnRunCheck" Grid.Column="2" Content="Проверить" Padding="12,5" Background="#1B2436" BorderBrush="#2A364F" Foreground="#60A5FA" FontSize="11.5"/>
+                            </Grid>
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="8"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="8"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="8"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="8"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <!-- Row 0: YouTube & Instagram -->
+                                <Border Grid.Row="0" Grid.Column="0" Background="#111622" CornerRadius="9" Padding="11,9" BorderBrush="#222B3D" BorderThickness="1" ToolTip="https://www.youtube.com">
+                                    <Grid>
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                            <Ellipse Name="DotCheckYouTube" Width="8" Height="8" Fill="#5C6982" Margin="0,0,8,0"/>
+                                            <TextBlock Text="YouTube" FontWeight="SemiBold" FontSize="12" Foreground="#E2E8F0"/>
+                                        </StackPanel>
+                                        <TextBlock Name="TxtCheckYouTube" Text="—" FontSize="11" Foreground="#8B98B0" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                                    </Grid>
+                                </Border>
+
+                                <Border Grid.Row="0" Grid.Column="2" Background="#111622" CornerRadius="9" Padding="11,9" BorderBrush="#222B3D" BorderThickness="1" ToolTip="https://www.instagram.com">
+                                    <Grid>
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                            <Ellipse Name="DotCheckInstagram" Width="8" Height="8" Fill="#5C6982" Margin="0,0,8,0"/>
+                                            <TextBlock Text="Instagram" FontWeight="SemiBold" FontSize="12" Foreground="#E2E8F0"/>
+                                        </StackPanel>
+                                        <TextBlock Name="TxtCheckInstagram" Text="—" FontSize="11" Foreground="#8B98B0" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                                    </Grid>
+                                </Border>
+
+                                <!-- Row 1: Discord & Telegram -->
+                                <Border Grid.Row="2" Grid.Column="0" Background="#111622" CornerRadius="9" Padding="11,9" BorderBrush="#222B3D" BorderThickness="1" ToolTip="https://discord.com">
+                                    <Grid>
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                            <Ellipse Name="DotCheckDiscord" Width="8" Height="8" Fill="#5C6982" Margin="0,0,8,0"/>
+                                            <TextBlock Text="Discord" FontWeight="SemiBold" FontSize="12" Foreground="#E2E8F0"/>
+                                        </StackPanel>
+                                        <TextBlock Name="TxtCheckDiscord" Text="—" FontSize="11" Foreground="#8B98B0" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                                    </Grid>
+                                </Border>
+
+                                <Border Name="CardTelegram" Grid.Row="2" Grid.Column="2" Background="#111622" CornerRadius="9" Padding="11,9" BorderBrush="#222B3D" BorderThickness="1" Cursor="Hand" ToolTip="Нажмите для настройки MTProxy в Telegram">
+                                    <Grid>
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                            <Ellipse Name="DotCheckTelegram" Width="8" Height="8" Fill="#5C6982" Margin="0,0,8,0"/>
+                                            <TextBlock Text="Telegram" FontWeight="SemiBold" FontSize="12" Foreground="#E2E8F0"/>
+                                        </StackPanel>
+                                        <TextBlock Name="TxtCheckTelegram" Text="Настроить" FontSize="11" Foreground="#60A5FA" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                                    </Grid>
+                                </Border>
+
+                                <!-- Row 2: RuTracker & Rutor -->
+                                <Border Grid.Row="4" Grid.Column="0" Background="#111622" CornerRadius="9" Padding="11,9" BorderBrush="#222B3D" BorderThickness="1" ToolTip="https://rutracker.org">
+                                    <Grid>
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                            <Ellipse Name="DotCheckRuTracker" Width="8" Height="8" Fill="#5C6982" Margin="0,0,8,0"/>
+                                            <TextBlock Text="RuTracker" FontWeight="SemiBold" FontSize="12" Foreground="#E2E8F0"/>
+                                        </StackPanel>
+                                        <TextBlock Name="TxtCheckRuTracker" Text="—" FontSize="11" Foreground="#8B98B0" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                                    </Grid>
+                                </Border>
+
+                                <Border Grid.Row="4" Grid.Column="2" Background="#111622" CornerRadius="9" Padding="11,9" BorderBrush="#222B3D" BorderThickness="1" ToolTip="https://rutor.info">
+                                    <Grid>
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                            <Ellipse Name="DotCheckRutor" Width="8" Height="8" Fill="#5C6982" Margin="0,0,8,0"/>
+                                            <TextBlock Text="Rutor.info" FontWeight="SemiBold" FontSize="12" Foreground="#E2E8F0"/>
+                                        </StackPanel>
+                                        <TextBlock Name="TxtCheckRutor" Text="—" FontSize="11" Foreground="#8B98B0" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                                    </Grid>
+                                </Border>
+
+                                <!-- Row 3: X (Twitter) & Medium -->
+                                <Border Grid.Row="6" Grid.Column="0" Background="#111622" CornerRadius="9" Padding="11,9" BorderBrush="#222B3D" BorderThickness="1" ToolTip="https://x.com">
+                                    <Grid>
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                            <Ellipse Name="DotCheckX" Width="8" Height="8" Fill="#5C6982" Margin="0,0,8,0"/>
+                                            <TextBlock Text="X (Twitter)" FontWeight="SemiBold" FontSize="12" Foreground="#E2E8F0"/>
+                                        </StackPanel>
+                                        <TextBlock Name="TxtCheckX" Text="—" FontSize="11" Foreground="#8B98B0" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                                    </Grid>
+                                </Border>
+
+                                <Border Grid.Row="6" Grid.Column="2" Background="#111622" CornerRadius="9" Padding="11,9" BorderBrush="#222B3D" BorderThickness="1" ToolTip="https://medium.com">
+                                    <Grid>
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                            <Ellipse Name="DotCheckMedium" Width="8" Height="8" Fill="#5C6982" Margin="0,0,8,0"/>
+                                            <TextBlock Text="Medium" FontWeight="SemiBold" FontSize="12" Foreground="#E2E8F0"/>
+                                        </StackPanel>
+                                        <TextBlock Name="TxtCheckMedium" Text="—" FontSize="11" Foreground="#8B98B0" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                                    </Grid>
+                                </Border>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </TabItem>
+
+            <!-- TAB 1: САЙТЫ -->
+            <TabItem Header="Сайты">
+                <Grid Margin="18,16">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Quick Add Bar (cleanly placed on Sites tab) -->
+                    <Border Grid.Row="0" Background="#151B28" CornerRadius="10" BorderBrush="#222B3D" BorderThickness="1" Padding="10" Margin="0,0,0,12">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBox Name="TxtQuickAddSite" Grid.Column="0" Background="#0B0E14" Foreground="#F1F5F9" BorderBrush="#263147" BorderThickness="1" Padding="10,7" VerticalContentAlignment="Center" Margin="0,0,8,0"/>
+                            <Button Name="BtnQuickAddSubmit" Grid.Column="1" Content="+ Добавить домен" Padding="14,7" Background="#3B82F6" BorderThickness="0" Foreground="#FFFFFF" FontWeight="SemiBold"/>
+                        </Grid>
+                    </Border>
+
+                    <TextBlock Grid.Row="1" Text="Домены избирательного обхода (по одному на строку):" Foreground="#8B98B0" FontSize="12" Margin="0,0,0,8"/>
+
+                    <Border Grid.Row="2" Background="#111622" CornerRadius="10" BorderBrush="#222B3D" BorderThickness="1">
+                        <TextBox Name="TxtSitesEditor" Background="Transparent" Foreground="#E2E8F0" FontFamily="Consolas" FontSize="12"
+                                 BorderThickness="0" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Padding="12"/>
+                    </Border>
+
+                    <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0">
+                        <Button Name="BtnResetSites" Content="Сбросить" Padding="14,7" Margin="0,0,8,0"/>
+                        <Button Name="BtnSaveSites" Content="Сохранить список" Background="#22C55E" BorderThickness="0" Foreground="#0B0E14" FontWeight="Bold" Padding="16,7"/>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+
+            <!-- TAB 2: TELEGRAM -->
+            <TabItem Header="Telegram">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="18,16">
+                        <Border Background="#151B28" CornerRadius="14" BorderBrush="#222B3D" BorderThickness="1" Padding="18">
+                            <StackPanel>
+                                <TextBlock Text="Подключение Telegram в 1 клик" FontSize="15" FontWeight="Bold" Foreground="#F1F5F9" Margin="0,0,0,6"/>
+                                <TextBlock Text="Прямой доступ к серверам Telegram часто блокируется по IP. Используйте встроенный FakeTLS MTProxy (порт 443, маскировка под HTTPS):" FontSize="12" Foreground="#8B98B0" TextWrapping="Wrap" Margin="0,0,0,16"/>
+
+                                <Button Name="BtnTgPrimary" Content="Подключить основной FakeTLS-прокси" Background="#3B82F6" BorderThickness="0" Foreground="#FFFFFF" FontWeight="Bold" FontSize="13" Padding="16,10" HorizontalAlignment="Left" Margin="0,0,0,12"/>
+
+                                <WrapPanel Margin="0,0,0,14">
+                                    <Button Name="BtnTgBackup1" Content="Резервный #1 (Mail.ru)" Padding="12,6" Margin="0,0,8,6"/>
+                                    <Button Name="BtnTgBackup2" Content="Резервный #2 (Mishutkin)" Padding="12,6" Margin="0,0,8,6"/>
+                                    <Button Name="BtnTgLocalSocks" Content="Локальный SOCKS5 (:1080)" Padding="12,6" Margin="0,0,8,6"/>
+                                </WrapPanel>
+
+                                <Border Background="#111622" CornerRadius="10" Padding="14,10" BorderBrush="#222B3D" BorderThickness="1" Margin="0,0,0,14">
+                                    <StackPanel>
+                                        <TextBlock Text="Как подключить" FontWeight="SemiBold" FontSize="12" Foreground="#F1F5F9" Margin="0,0,0,6"/>
+                                        <TextBlock Text="1. Нажмите кнопку выше — Telegram Desktop предложит включить прокси." FontSize="11.5" Foreground="#CBD5E1" Margin="0,0,0,4" TextWrapping="Wrap"/>
+                                        <TextBlock Text="2. Подтвердите подключение — соединение установится мгновенно." FontSize="11.5" Foreground="#22C55E" Margin="0,0,0,4" TextWrapping="Wrap"/>
+                                        <TextBlock Text="3. Отключить позже: Настройки → Продвинутые настройки → Тип соединения." FontSize="11.5" Foreground="#8B98B0" TextWrapping="Wrap"/>
+                                    </StackPanel>
+                                </Border>
+
+                                <TextBlock Text="Ссылка для ручной вставки:" FontSize="11.5" Foreground="#8B98B0" Margin="0,0,0,6"/>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox Name="TxtTgLink" Text="tg://proxy?server=156.239.251.46&amp;port=443&amp;secret=eeff2a510da3958357083ec111f4de115f7777772e6d6963726f736f66742e636f6d" Background="#111622" Foreground="#93C5FD" FontFamily="Consolas" FontSize="11" BorderBrush="#222B3D" BorderThickness="1" Padding="10,7" IsReadOnly="True" Margin="0,0,8,0"/>
+                                    <Button Name="BtnCopyTgLink" Grid.Column="1" Content="Копировать" Padding="14,7"/>
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- TAB 3: ЖУРНАЛ -->
+            <TabItem Header="Журнал">
+                <Grid Margin="18,16">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <Grid Grid.Row="0" Margin="0,0,0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Журнал событий и разблокировки" FontSize="13" FontWeight="SemiBold" Foreground="#F1F5F9" VerticalAlignment="Center"/>
+                        <Button Name="BtnClearLogs" Grid.Column="1" Content="Очистить" Padding="12,5" FontSize="11.5"/>
+                    </Grid>
+
+                    <Border Grid.Row="1" Background="#111622" CornerRadius="10" BorderBrush="#222B3D" BorderThickness="1">
+                        <TextBox Name="TxtLogs" Background="Transparent" Foreground="#94A3B8" FontFamily="Consolas" FontSize="11"
+                                 BorderThickness="0" IsReadOnly="True" AcceptsReturn="True" TextWrapping="Wrap"
+                                 VerticalScrollBarVisibility="Auto" Padding="12"/>
+                    </Border>
+                </Grid>
+            </TabItem>
+
+            <!-- TAB 4: НАСТРОЙКИ -->
+            <TabItem Header="Настройки">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="18,16">
+                        <Border Background="#151B28" CornerRadius="14" BorderBrush="#222B3D" BorderThickness="1" Padding="18">
+                            <StackPanel>
+                                <TextBlock Text="Параметры работы" FontSize="14" FontWeight="Bold" Foreground="#F1F5F9" Margin="0,0,0,14"/>
+
+                                <TextBlock Text="Приоритетный движок обхода:" FontSize="11.5" Foreground="#8B98B0" Margin="0,0,0,5"/>
+                                <ComboBox Name="CmbEngine" Margin="0,0,0,12">
+                                    <ComboBoxItem Content="GoodbyeDPI (Рекомендуется)" IsSelected="True"/>
+                                    <ComboBoxItem Content="ByeDPI"/>
+                                </ComboBox>
+
+                                <TextBlock Text="Профиль по умолчанию:" FontSize="11.5" Foreground="#8B98B0" Margin="0,0,0,5"/>
+                                <ComboBox Name="CmbPreset" Margin="0,0,0,16">
+                                    <ComboBoxItem Content="YouTube + Сайты (Основной -9)" IsSelected="True"/>
+                                    <ComboBoxItem Content="YouTube + Сайты (Альтернативный -5)"/>
+                                    <ComboBoxItem Content="Максимальный обход (-e 1 -q)"/>
+                                </ComboBox>
+
+                                <CheckBox Name="ChkMinimizeToTray" Content="Сворачивать в трей вместо закрытия" IsChecked="True" Margin="0,0,0,10"/>
+                                <CheckBox Name="ChkAutoStart" Content="Запускать при старте Windows" Margin="0,0,0,18"/>
+
+                                <Button Name="BtnSaveSettings" Content="Сохранить настройки" Background="#3B82F6" BorderThickness="0" Foreground="#FFFFFF" FontWeight="Bold" Padding="16,8" HorizontalAlignment="Left"/>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+        </TabControl>
+
+        <!-- Minimal Footer Bar -->
+        <Border Grid.Row="2" Background="#0E121A" BorderBrush="#1E2636" BorderThickness="0,1,0,0" Padding="18,7">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Name="TxtFooterStatus" Text="Готово к запуску" FontSize="11" Foreground="#8B98B0"/>
+                <TextBlock Grid.Column="1" Text="Яндекс DNS 77.88.8.8:1253" FontSize="11" Foreground="#5C6982"/>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

@@ -1,0 +1,43 @@
+# Список доменов для избирательного обхода DPI
+# Каждый домен с новой строки (без https:// и путей)
+
+# YouTube & Google Media
+youtube.com
+googlevideo.com
+ytimg.com
+youtu.be
+ggpht.com
+googleapis.com
+
+# Discord
+discord.com
+discordapp.com
+discord.gg
+discord-attachments-uploads-prd.storage.googleapis.com
+gateway.discord.gg
+
+# Telegram
+telegram.org
+t.me
+telesco.pe
+
+# GitHub & Dev
+github.com
+githubusercontent.com
+raw.githubusercontent.com
+
+# Торренты и трекеры
+rutor.info
+rutor.is
+rutracker.org
+nnmclub.to
+
+# Соцсети и медиа
+instagram.com
+cdninstagram.com
+twitter.com
+x.com
+twimg.com
+notion.so
+medium.com
+
