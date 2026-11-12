@@ -25,9 +25,9 @@ if %ERRORLEVEL% NEQ 0 exit /b %ERRORLEVEL%
 set GOOS=windows
 set GOARCH=amd64
 
-echo [4/4] Packaging signed Mirage.app + Mirage-macOS-v1.0.0.dmg...
-go run ./cmd/mkdmg -amd64 build\mirage_amd64 -arm64 build\mirage_arm64 -tpws assets\tpws -icns assets\Mirage.icns -sites assets\sites.txt -out ..\release\macos\Mirage-macOS-v1.0.0.dmg
+echo [4/4] Packaging signed Mirage.app + Mirage-macOS-v1.1.0.dmg...
+go run ./cmd/mkdmg -amd64 build\mirage_amd64 -arm64 build\mirage_arm64 -tpws assets\tpws -icns assets\Mirage.icns -sites assets\sites.txt -out ..\release\macos\Mirage-macOS-v1.1.0.dmg
 if %ERRORLEVEL% NEQ 0 exit /b %ERRORLEVEL%
 
-echo [SUCCESS] Built ..\release\macos\Mirage-macOS-v1.0.0.dmg
+echo [SUCCESS] Built ..\release\macos\Mirage-macOS-v1.1.0.dmg
 

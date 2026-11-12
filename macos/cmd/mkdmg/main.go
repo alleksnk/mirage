@@ -22,7 +22,7 @@ func main() {
 	tpwsPath := flag.String("tpws", "assets/tpws", "path to universal tpws binary")
 	icnsPath := flag.String("icns", "assets/Mirage.icns", "path to Mirage.icns")
 	sitesPath := flag.String("sites", "assets/sites.txt", "path to default sites.txt")
-	outDmg := flag.String("out", "../release/macos/Mirage-macOS-v1.0.0.dmg", "output dmg path")
+	outDmg := flag.String("out", "../release/macos/Mirage-macOS-v1.1.0.dmg", "output dmg path")
 	flag.Parse()
 
 	if *amd64Path == "" || *arm64Path == "" {
@@ -56,16 +56,16 @@ func main() {
 	bundle, err := app.NewBundle().
 		WithName("Mirage").
 		WithBundleID("com.mirage.dpi").
-		WithVersion("1.0.0").
+		WithVersion("1.1.0").
 		WithMinimumSystemVersion("11.0").
 		WithModTime(buildTime).
 		WithExecutable("Mirage", universalBin).
 		WithIconFromPath("Mirage.icns", *icnsPath).
 		WithResource("sites.txt", sitesBytes).
-		WithInfoPlistValue("CFBundleShortVersionString", "1.0.0").
+		WithInfoPlistValue("CFBundleShortVersionString", "1.1.0").
 		WithInfoPlistValue("CFBundleDisplayName", "Mirage").
 		WithInfoPlistValue("LSApplicationCategoryType", "public.app-category.utilities").
-		WithInfoPlistValue("LSUIElement", false).
+		WithInfoPlistValue("LSUIElement", true).
 		File("Contents/MacOS/tpws").WithBody(tpwsBytes).WithMode(0o755).Add().
 		WithCodeSigner(signer).
 		Build()

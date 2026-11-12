@@ -10,9 +10,14 @@ import (
 	"os/signal"
 	"runtime"
 	"strings"
+	"sync"
 	"syscall"
 	"time"
 )
+
+func init() {
+	runtime.LockOSThread()
+}
 
 func main() {
 	EnsureAssetsPrepared()
@@ -38,17 +43,26 @@ func main() {
 		}
 	}()
 
-	openMacAppWindow(uiURL)
+	var cleanupOnce sync.Once
+	cleanup := func() {
+		cleanupOnce.Do(func() {
+			Engine.Stop()
+			_ = srv.Close()
+		})
+	}
 
 	sigCh := make(chan os.Signal, 2)
 	signal.Notify(sigCh, os.Interrupt, syscall.SIGTERM, syscall.SIGHUP)
-	select {
-	case <-sigCh:
-	case <-quitCh:
-	}
+	go func() {
+		select {
+		case <-sigCh:
+		case <-quitCh:
+		}
+		closeMacAppWindow()
+	}()
 
-	Engine.Stop()
-	_ = srv.Close()
+	runMacAppWindow(uiURL, cleanup)
+	cleanup()
 }
 
 func buildHttpHandler(quitCh chan struct{}) http.Handler {
@@ -186,24 +200,5 @@ func buildHttpHandler(quitCh chan struct{}) http.Handler {
 func writeJson(w http.ResponseWriter, v any) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	_ = json.NewEncoder(w).Encode(v)
-}
-
-func openMacAppWindow(url string) {
-	if runtime.GOOS != "darwin" {
-		return
-	}
-	browsers := []string{
-		"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
-		"/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge",
-		"/Applications/Brave Browser.app/Contents/MacOS/Brave Browser",
-		"/Applications/Chromium.app/Contents/MacOS/Chromium",
-	}
-	for _, b := range browsers {
-		if _, err := os.Stat(b); err == nil {
-			_ = exec.Command(b, "--app="+url, "--window-size=560,680").Start()
-			return
-		}
-	}
-	_ = exec.Command("open", url).Start()
 }
 
